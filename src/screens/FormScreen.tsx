@@ -1,5 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
 import ItemForm from "../components/ItemForm";
 
 export default function FormScreen() {
@@ -8,9 +9,17 @@ export default function FormScreen() {
   const item = (route.params as any)?.item;
 
   return (
-    <ItemForm
-      defaultValues={item}
-      onFinish={() => navigation.goBack()}
-    />
+    <SafeAreaView style={styles.container}>
+      <ItemForm
+        defaultValues={item}
+        onFinish={() => navigation.goBack()}
+      />
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

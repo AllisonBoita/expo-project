@@ -1,7 +1,17 @@
-import { Button, ButtonText, Image, Input, InputField, VStack } from "@gluestack-ui/themed";
+import {
+  Button,
+  ButtonText,
+  Image,
+  Input,
+  InputField,
+  VStack,
+  ScrollView,
+  Box,
+  Text,
+} from "@gluestack-ui/themed";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import uuid from "react-native-uuid";
 import { addItem, updateItem } from "../storage/items";
 
@@ -21,54 +31,101 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
     }
   };
 
+  useEffect(() => {
+    if (defaultValues) {
+      setTitle(defaultValues.title || "");
+      setDescription(defaultValues.description || "");
+      setPhoto(defaultValues.photo || "");
+    }
+  }, [defaultValues]);
+
   const handleSubmit = async () => {
     if (!title.trim()) return alert("Preencha o título!");
+
     const item = {
       id: defaultValues?.id || uuid.v4(),
       title,
       description,
       photo,
     };
-    if (defaultValues) await updateItem(item);
-    else await addItem(item);
+
+    if (defaultValues) {
+      await updateItem(item);
+    } else {
+      await addItem(item);
+      // limpa só se for novo item
+      setTitle("");
+      setDescription("");
+      setPhoto("");
+    }
+
     onFinish();
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-  });
-
   return (
-    <SafeAreaView style={styles.container}>
-    <VStack space="md" p={4}>
-      <Input>
-  <InputField
-    placeholder="Título"
-    value={title}
-    onChangeText={setTitle}
-  />
-</Input>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView bg="$white">
+        <VStack space="lg" p="$5" mt="$4">
+          <Box>
+            <Text size="sm" color="$coolGray500" mb="$1">
+              Título
+            </Text>
+            <Input>
+              <InputField
+                placeholder="Digite o título"
+                value={title}
+                onChangeText={setTitle}
+              />
+            </Input>
+          </Box>
 
-<Input mt="$2">
-  <InputField
-    placeholder="Descrição"
-    value={description}
-    onChangeText={setDescription}
-  />
-</Input>
-      {photo && <Image source={{ uri: photo }} alt="Foto" style={{ width: "100%", height: 160, borderRadius: 12 }} />}
-      <Button onPress={pickImage}>
-  <ButtonText>Tirar Foto</ButtonText>
-</Button>
+          <Box>
+            <Text size="sm" color="$coolGray500" mb="$1">
+              Descrição
+            </Text>
+            <Input>
+              <InputField
+                placeholder="Digite a descrição"
+                value={description}
+                onChangeText={setDescription}
+              />
+            </Input>
+          </Box>
 
-<Button onPress={handleSubmit}>
-  <ButtonText>{defaultValues ? "Atualizar" : "Registrar"}</ButtonText>
-</Button>
-    </VStack>
-    </SafeAreaView>
+          {photo && (
+            <Image
+              source={{ uri: photo }}
+              alt="Foto"
+              style={{
+                width: "100%",
+                height: 180,
+                borderRadius: 12,
+              }}
+            />
+          )}
+
+          <Button
+            bgColor="$blue600"
+            borderRadius="$xl"
+            onPress={pickImage}
+          >
+            <ButtonText color="$white">Tirar Foto</ButtonText>
+          </Button>
+
+          <Button
+            bgColor={defaultValues ? "$amber600" : "$green600"}
+            borderRadius="$xl"
+            onPress={handleSubmit}
+          >
+            <ButtonText color="$white">
+              {defaultValues ? "Atualizar" : "Registrar"}
+            </ButtonText>
+          </Button>
+        </VStack>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-
-
 }
