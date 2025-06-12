@@ -1,35 +1,19 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import HomeScreen from "./screens/HomeScreen";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DrawerNavigator from "./DrawerNavigator";
 import FormScreen from "./screens/FormScreen";
 import LoginScreen from "./screens/LoginScreen";
-import { CustomDrawerContent } from "./components/CustomDrawerContent"; // <== importa teu menu
 
-const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
-        screenOptions={{
-          headerStyle: { backgroundColor: "#0a1967" },
-          headerTintColor: "#fff",
-          drawerActiveTintColor: "#0a1967",
-          drawerLabelStyle: { fontSize: 16 },
-        }}
-      >
-        {/* Telas visíveis no menu */}
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Form" component={FormScreen} options={{ title: "Form" }}  />
-
-        {/* Tela de Login não aparece no menu, só pra redirecionamento */}
-        <Drawer.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ drawerItemStyle: { display: "none" }, headerShown: false }}
-        />
-      </Drawer.Navigator>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Main" component={DrawerNavigator} />
+        <Stack.Screen name="Form" component={FormScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
