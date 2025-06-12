@@ -1,13 +1,13 @@
 import {
   Box,
-  VStack,
-  Input,
-  InputField,
   Button,
   ButtonText,
+  Input,
+  InputField,
   Text,
-  useToast,
   Toast,
+  useToast,
+  VStack,
 } from "@gluestack-ui/themed";
 import React, { useState } from "react";
 
@@ -16,43 +16,46 @@ export default function LoginScreen({ navigation }: any) {
   const [senha, setSenha] = useState("");
   const toast = useToast();
 
+  const showToast = (msg: string) =>
+    toast.show({
+      placement: "top",
+      render: () => (
+        <Toast bgColor="$red600" p="$3" borderRadius="$md">
+          <Text color="$white">{msg}</Text>
+        </Toast>
+      ),
+    });
+
   const handleLogin = () => {
     if (!email || !senha) {
-      toast.show({
-        placement: "top",
-        render: () => {
-          return (
-            <Toast bgColor="$red600" p="$3" borderRadius="$md">
-              <Text color="$white">Preencha todos os campos</Text>
-            </Toast>
-          );
-        },
-      });
-      return;
+      return showToast("Preencha todos os campos");
     }
 
-    // mock de login (validação fake)
     if (email === "admin" && senha === "123") {
       navigation.reset({
-  index: 0,
-  routes: [{ name: "Home" }],
-}); // troca de tela (sem voltar ao login)
-    } else {
-      toast.show({
-        placement: "top",
-        render: () => (
-          <Toast bgColor="$red600" p="$3" borderRadius="$md">
-            <Text color="$white">E-mail ou senha inválidos</Text>
-          </Toast>
-        ),
+        index: 0,
+        routes: [{ name: "Main" }],
       });
+    } else {
+      showToast("E-mail ou senha inválidos");
     }
   };
 
   return (
-    <Box flex={1} bg="$coolGray100" _dark={{ bg: "$coolGray900" }} justifyContent="center" px="$6">
-      <VStack space="lg">
-        <Text fontSize="$2xl" fontWeight="bold" color="$blue700" _dark={{ color: "$blue300" }}>
+    <Box
+      flex={1}
+      justifyContent="center"
+      alignItems="center"
+      bg="$coolGray100"
+      px="$6"
+    >
+      <VStack width="100%" maxWidth={400} space="lg">
+        <Text
+          fontSize="$2xl"
+          fontWeight="bold"
+          color="$blue700"
+          textAlign="center"
+        >
           Bem-vindo de volta
         </Text>
 
@@ -75,7 +78,12 @@ export default function LoginScreen({ navigation }: any) {
           />
         </Input>
 
-        <Button bg="$blue600" _dark={{ bg: "$blue400" }} borderRadius="$xl" onPress={handleLogin}>
+        <Button
+          bg="$blue600"
+          borderRadius="$xl"
+          onPress={handleLogin}
+          isDisabled={!email || !senha}
+        >
           <ButtonText color="$white" fontWeight="bold">Entrar</ButtonText>
         </Button>
       </VStack>
