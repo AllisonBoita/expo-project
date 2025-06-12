@@ -1,12 +1,14 @@
+import { Box, Pressable, Text, VStack } from "@gluestack-ui/themed";
+import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
-import { DrawerContentScrollView, DrawerItemList} from "@react-navigation/drawer";
-import { VStack, Box, Text, Pressable } from "@gluestack-ui/themed";
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from "../types/navigation";
 
 export function CustomDrawerContent(props: any) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <DrawerContentScrollView {...props}>
-
       <DrawerItemList {...props} />
 
       <VStack px="$4" mt="$4">
@@ -23,7 +25,6 @@ export function CustomDrawerContent(props: any) {
             px="$4"
             borderRadius="$lg"
             bg="$red600"
-            _dark={{ bg: "$red500" }}
           >
             <Text color="$white" fontWeight="bold" textAlign="center">
               Sair
