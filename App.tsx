@@ -1,14 +1,11 @@
-import 'react-native-gesture-handler';
-import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
+import { GluestackUIProvider } from "@gluestack-ui/themed";
+import 'react-native-gesture-handler';
 import AppNavigator from "./src/AppNavigator";
-
-
 
 export default function App() {
   return (
-    <GluestackUIProvider config={config} colorMode="system">
-
+    <GluestackUIProvider config={config}>
       <AppNavigator />
     </GluestackUIProvider>
   );
