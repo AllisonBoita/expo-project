@@ -1,16 +1,16 @@
 import {
+  Box,
   Button,
   ButtonText,
   Image,
   Input,
   InputField,
-  VStack,
   ScrollView,
-  Box,
   Text,
+  VStack,
 } from "@gluestack-ui/themed";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import uuid from "react-native-uuid";
 import { addItem, updateItem } from "../storage/items";
@@ -19,6 +19,14 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
   const [title, setTitle] = useState(defaultValues?.title || "");
   const [description, setDescription] = useState(defaultValues?.description || "");
   const [photo, setPhoto] = useState(defaultValues?.photo || "");
+
+  useEffect(() => {
+    if (!defaultValues) {
+      setTitle("");
+      setDescription("");
+      setPhoto("");
+    }
+  }, [defaultValues]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchCameraAsync({
@@ -31,17 +39,8 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
     }
   };
 
-  useEffect(() => {
-    if (defaultValues) {
-      setTitle(defaultValues.title || "");
-      setDescription(defaultValues.description || "");
-      setPhoto(defaultValues.photo || "");
-    }
-  }, [defaultValues]);
-
   const handleSubmit = async () => {
     if (!title.trim()) return alert("Preencha o título!");
-
     const item = {
       id: defaultValues?.id || uuid.v4(),
       title,
@@ -53,26 +52,17 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
       await updateItem(item);
     } else {
       await addItem(item);
-      // limpa só se for novo item
-      setTitle("");
-      setDescription("");
-      setPhoto("");
     }
 
     onFinish();
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView bg="$white">
         <VStack space="lg" p="$5" mt="$4">
           <Box>
-            <Text size="sm" color="$coolGray500" mb="$1">
-              Título
-            </Text>
+            <Text size="sm" color="$coolGray500" mb="$1">Título</Text>
             <Input>
               <InputField
                 placeholder="Digite o título"
@@ -83,9 +73,7 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
           </Box>
 
           <Box>
-            <Text size="sm" color="$coolGray500" mb="$1">
-              Descrição
-            </Text>
+            <Text size="sm" color="$coolGray500" mb="$1">Descrição</Text>
             <Input>
               <InputField
                 placeholder="Digite a descrição"
@@ -107,11 +95,7 @@ export default function ItemForm({ defaultValues, onFinish }: any) {
             />
           )}
 
-          <Button
-            bgColor="$blue600"
-            borderRadius="$xl"
-            onPress={pickImage}
-          >
+          <Button bgColor="$blue600" borderRadius="$xl" onPress={pickImage}>
             <ButtonText color="$white">Tirar Foto</ButtonText>
           </Button>
 
